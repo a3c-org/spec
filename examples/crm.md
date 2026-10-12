@@ -2,10 +2,10 @@
 
 This example applies [Draft 0.1](../SPEC.md) to a small CRM. It is a proposed
 acceptance fixture, not a running application. Component versions, contracts,
-and bindings below describe an experiment to build; no CLI syntax is prescribed.
+and bindings below describe an experiment to build.
 
 The [implementation plan](crm/PLAN.md) records the Bun/TypeScript/SQLite,
-CLI-first scope and milestones for turning this fixture into a runnable example.
+REST/curl scope and milestones for turning this fixture into a runnable example.
 
 The developer wants a custom contacts implementation and a contact-label feature,
 then wants to change the contacts API while continuing to accept client updates.
@@ -177,7 +177,7 @@ contracts, the migration, and the changed graph.
 ## 5. Adopt an upstream update while keeping the changes
 
 Assume the original CRM publisher releases `example.crm/client@1.0.1` with a
-security fix to its display behavior and unchanged C1/L1 requirements. This is a
+security fix to its HTTP handling and unchanged C1/L1 requirements. This is a
 hypothetical fixture release, not a claim about a real product vulnerability.
 
 Replace `client@1.0.0` with `client@1.0.1` in the assembly from section 4. Retain

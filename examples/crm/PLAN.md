@@ -1,7 +1,8 @@
 # Executable CRM reference example
 
-Status: agreed implementation plan; no executable components or recorded passes
-yet. This document plans the experiment in the [CRM walkthrough](../crm.md).
+Status: implementation plan; milestone progress and implementation PR links
+are recorded in [draft tracking PR #1](https://github.com/a3c-org/spec/pull/1).
+This document plans the experiment in the [CRM walkthrough](../crm.md).
 The [Draft 0.1 specification](../../SPEC.md) and its
 [acceptance criteria](../../SPEC.md#10-first-experiment-and-acceptance-criteria)
 remain the source of truth for required behavior.
@@ -14,7 +15,8 @@ while unchanged consumers continue to work. The demonstration must be repeatable
 without AI or mutable artifact discovery.
 
 - Use Bun, TypeScript, and SQLite, with tooling managed through mise.
-- Start with a CLI client and scripted scenarios. Defer a browser UI.
+- Expose a REST API exercised with curl and scripted HTTP scenarios. Defer a
+  browser UI; mise tasks initialize fixtures and start the server.
 - Keep the existing contacts operations (`create`, `get`) and label operations
   (`add`, `list`), including all their specified semantics.
 - Use the existing alpha/beta tenant fixtures, read/write principals, read-only
@@ -34,8 +36,10 @@ invocation and value encoding, error handling, identity propagation, lifecycle,
 and test execution conventions before the baseline components are implemented.
 Principal and tenant identity are not caller-controlled contract arguments.
 
-The CLI is the client component's local entry point. It has no direct storage
-access. The baseline bindings are exactly those in the walkthrough:
+The REST adapter is the client component's local entry point. The runner
+authenticates fixture bearer tokens and supplies context-bound ports for each
+request. The HTTP client has no direct storage access. The baseline bindings
+are exactly those in the walkthrough:
 
 ```text
 client.contacts -> contacts.api
@@ -90,24 +94,25 @@ and switches ownership and bindings together before resuming writes. Recovery
 after new writes must account for those writes; restoring an old snapshot alone
 is insufficient.
 
-Make the later client update a CLI display fix: escape terminal control
-characters in displayed contact names while retaining exact stored names and
-unchanged C1/L1 requirements. Capture the regression in tests so the hypothetical
-unsafe display behavior is not exercised against a developer's terminal. Keep
-the people provider, adapter, labels, and their state unchanged for this update.
+Make the later client update an HTTP-layer security fix with unchanged C1/L1
+requirements. Select and capture the specific HTTP regression when M4 is planned;
+there is no terminal renderer in this example. Keep the people provider, adapter,
+labels, and their state unchanged for this update.
 
 ## Implementation milestones
 
-Each milestone is a separate PR targeting `main` and adds its relevant tests
-immediately. The final milestone completes coverage and reproduction; it does
-not defer testing of earlier work.
+Implementation PRs target `main` and add their relevant tests immediately. M1 is
+split into two review checkpoints so the working API and component boundaries
+can be reviewed before adding the full composition machinery. The final milestone
+completes coverage and reproduction; it does not defer testing of earlier work.
 
 | Milestone | Deliverable | Required observation |
 | --- | --- | --- |
-| M1: Runnable baseline | Project setup, CLI client, contacts, labels, composition runner, resolver, locks, and contract suites. | An explicit locked assembly passes contract checks and a create -> label -> read flow for both tenants. |
+| M1a: Runnable REST slice | Project setup, HTTP client, contacts, labels, fixed baseline wiring, fixture identities, behavioral suites, and curl demo. | Persistent endpoints pass behavioral and HTTP checks for both tenants; a disposable curl demo passes. This is not yet a locked or accepted assembly. |
+| M1b: Verified baseline | Configurable resolution, artifact digests, locks, policy checks, and machine-readable verification reports. | An explicit locked assembly passes contract and integration checks. Only then is M1 complete. |
 | M2: Contacts replacement | Alternative contacts provider and offline migration from `rows-v1` to `indexed-v1`. | Client and labels remain unchanged; identities, names, tenant boundaries, label references, and retry history survive. Failed validation preserves the originals. |
 | M3: Contract branch | People contract/provider, contacts adapter, and migration from `indexed-v1` to `people-v1`. | Original consumers work through the adapter; C1 passes against the actual adapted provider and C2 passes directly. |
-| M4: Client update | New CLI client release with the terminal-control-character display fix. | The regression check passes while the custom provider, adapter, labels, contracts, and state remain unchanged. |
+| M4: Client update | New HTTP client release with a tested security fix. | The regression check passes while the custom provider, adapter, labels, contracts, and state remain unchanged. |
 | M5: Complete demonstration | Remaining rejection cases, clean-environment instructions, retained artifacts and reports, and integration-effort comparison. | Another developer reproduces successful transitions and expected failures without AI or mutable discovery. |
 
 ## Acceptance coverage
