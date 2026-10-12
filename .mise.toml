@@ -1,0 +1,29 @@
+[tools]
+bun = "1.3.14"
+
+[tasks."crm:install"]
+dir = "examples/crm"
+run = "bun install --frozen-lockfile"
+
+[tasks."crm:init"]
+dir = "examples/crm"
+run = "bun run init.ts"
+
+[tasks."crm:serve"]
+dir = "examples/crm"
+run = "bun run server.ts"
+
+[tasks."crm:demo"]
+dir = "examples/crm"
+run = "bun run scripts/demo.ts"
+
+[tasks."crm:typecheck"]
+dir = "examples/crm"
+run = "bun run --bun typecheck"
+
+[tasks."crm:test"]
+dir = "examples/crm"
+run = "bun test"
+
+[tasks."crm:check"]
+run = ["mise run crm:typecheck", "mise run crm:test"]
