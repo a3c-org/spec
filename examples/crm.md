@@ -4,6 +4,9 @@ This example applies [Draft 0.1](../SPEC.md) to a small CRM. It is a proposed
 acceptance fixture, not a running application. Component versions, contracts,
 and bindings below describe an experiment to build; no CLI syntax is prescribed.
 
+The [implementation plan](crm/PLAN.md) records the Bun/TypeScript/SQLite,
+CLI-first scope and milestones for turning this fixture into a runnable example.
+
 The developer wants a custom contacts implementation and a contact-label feature,
 then wants to change the contacts API while continuing to accept client updates.
 The original CRM maintainer does not need to merge either customization.
